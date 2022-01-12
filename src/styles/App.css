@@ -54,6 +54,14 @@
   animation: gradient-animation 4s ease infinite;
 }
 
+.connect-wallet-button-disabled {
+  /* background: -webkit-linear-gradient(left, #60c657, #35aee2); */
+  background: grey;
+  background-size: 200% 200%;
+  animation: gradient-animation 4s ease infinite;
+  color: darkgrey;
+}
+
 .mint-button {
   background: -webkit-linear-gradient(left, #a200d6, #ff6fdf);
   background-size: 200% 200%;
@@ -122,4 +130,17 @@
   100% {
     background-position: 0% 50%;
   }
+}
+
+.input {
+  border-radius: 20px;
+  background-size: 200% 200%;
+  margin-right: 15px;
+  height: 45px;
+  border: 0;
+  width: auto;
+  padding-left: 15px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
 }

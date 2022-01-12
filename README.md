@@ -91,3 +91,8 @@ Tasks - development of front end
 Tasks - deployment of front end
 
 - Use Fleek.co
+
+Resources
+
+- Read the IPFS best practice guide for NFT's https://docs.ipfs.io/how-to/mint-nfts-with-ipfs/#a-short-introduction-to-nfts
+-

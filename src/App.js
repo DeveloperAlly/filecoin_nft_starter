@@ -4,6 +4,26 @@ import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import filecoinNFTHack from "./utils/FilecoinNFTHack.json";
 
+import { NFTStorage, File } from "nft.storage";
+import { pack } from "ipfs-car/pack";
+
+// const apiKey = "YOUR_API_KEY";
+// process.env.REACT_APP_NFT_STORAGE_API_KEY;
+// const client = new NFTStorage({ token: apiKey });
+
+// const metadata = await client.store({
+//   name: "Pinpie",
+//   description: "Pin is not delicious beef!",
+//   image: new File(
+//     [
+//       /* data */
+//     ],
+//     "pinpie.jpg",
+//     { type: "image/jpg" }
+//   ),
+// });
+// console.log(metadata.url);
+
 // Constants
 const TWITTER_HANDLE = "developerally";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
@@ -137,21 +157,25 @@ const App = () => {
 
   const renderMintUI = () => (
     <div>
-      <p className="sub-text">
-        <label>Enter Your Name:</label>
+      <p>
         <input
-          label="Enter Your Name"
+          className="input"
+          placeholder="Enter your name"
           type="text"
+          pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$"
+          required
           value={name}
-          onChange={(e) => {
-            console.log(e.target.value);
-            setName(e.target.value);
-          }}
-        ></input>
+          onChange={(e) => setName(e.target.value)}
+        />
       </p>
       <button
         onClick={askContractToMintNft}
-        className="cta-button connect-wallet-button"
+        className={
+          name
+            ? "cta-button connect-wallet-button"
+            : "cta-button connect-wallet-button-disabled"
+        }
+        disabled={!name}
       >
         Mint NFT
       </button>
@@ -208,10 +232,8 @@ const App = () => {
     <div className="App">
       <div className="container">
         <div className="header-container">
-          <p className="header gradient-text">My NFT Collection</p>
-          <p className="sub-text">
-            Each unique. Each beautiful. Discover your NFT today.
-          </p>
+          <p className="header gradient-text">NFTHack NFT Collection</p>
+          <p className="sub-text">Each unique. Only 50 copies.</p>
           {currentAccount === ""
             ? renderNotConnectedContainer()
             : renderMintUI()}
