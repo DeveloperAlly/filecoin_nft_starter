@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/contracts/FilecoinNFTHack.sol": {
-      "lastModificationDate": 1641991059167,
-      "contentHash": "e77002cb61f703929f1a65442e7ada48",
+      "lastModificationDate": 1642037247947,
+      "contentHash": "5344a006a927cdd4b7435187cf2aca3e",
       "sourceName": "contracts/FilecoinNFTHack.sol",
       "solcConfig": {
         "version": "0.8.4",
@@ -31,8 +31,7 @@
       "imports": [
         "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
         "@openzeppelin/contracts/utils/Counters.sol",
-        "hardhat/console.sol",
-        "./libraries/Base64.sol"
+        "hardhat/console.sol"
       ],
       "versionPragmas": [
         "^0.8.0"
@@ -548,6 +547,37 @@
       "artifacts": [
         "Greeter"
       ]
+    },
+    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/contracts/FilecoinNFT.sol": {
+      "lastModificationDate": 1642037285301,
+      "contentHash": "e854c35374ed021093b9f714ad885426",
+      "sourceName": "contracts/FilecoinNFT.sol",
+      "solcConfig": {
+        "version": "0.8.4",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [],
+      "artifacts": []
     }
   }
 }

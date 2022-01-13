@@ -95,4 +95,4 @@ Tasks - deployment of front end
 Resources
 
 - Read the IPFS best practice guide for NFT's https://docs.ipfs.io/how-to/mint-nfts-with-ipfs/#a-short-introduction-to-nfts
--
+- See the NFT.School guide https://nftschool.dev/
