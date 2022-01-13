@@ -22,10 +22,6 @@ const App = () => {
   const [currentAccount, setCurrentAccount] = useState("");
   const [name, setName] = useState("");
   const [links, setLinks] = useState(INITIAL_LINK_STATE);
-
-  const [openseaLink, setOpenSeaLink] = useState("");
-  const [raribleLink, setRaribleLink] = useState("");
-  const [imageView, setImageView] = useState("");
   const [nftCollectionData, setNftCollectionData] = useState("");
 
   useEffect(() => {
@@ -137,22 +133,6 @@ const App = () => {
     }
   };
 
-  //Create the IPFS CID of the image data
-  // const saveImageDatatoNFTStorage = async () => {
-  //   const CID = await client.storeBlob(
-  //     new Blob([
-  //       `${baseSVG}${name}</text>
-  // </svg>`,
-  //     ])
-  //   );
-  //   console.log("cid", CID);
-  //   const status = await client.status(CID);
-  //   console.log("status", status);
-  //   setImageCIDdata(status);
-  //   setImageView(`https://ipfs.io/ipfs/${CID}`);
-  //   saveDataToNFTSorage(CID);
-  // };
-
   //Create the IPFS CID of the json data
   const createNFTData = async () => {
     //lets load up this token with some metadata and our image and save it to NFT.storage
@@ -176,6 +156,7 @@ const App = () => {
       },
     });
 
+    //wrap this in a try function - if it doesn't save - no mint
     let imgViewArray = metadata.data.image.pathname.split("/");
     const imgView = `https://${imgViewArray[2]}.ipfs.dweb.link/${imgViewArray[3]}`;
     setLinks({ ...links, image: imgView });
