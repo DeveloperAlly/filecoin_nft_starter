@@ -96,3 +96,5 @@ Resources
 
 - Read the IPFS best practice guide for NFT's https://docs.ipfs.io/how-to/mint-nfts-with-ipfs/#a-short-introduction-to-nfts
 - See the NFT.School guide https://nftschool.dev/
+- Public Gateway status checker: https://ipfs.github.io/public-gateway-checker/
+- Faucets for rinkeby eth:

@@ -19,16 +19,17 @@ const App = () => {
   const [tx, setTx] = useState("");
   const [openseaLink, setOpenSeaLink] = useState("");
   const [raribleLink, setRaribleLink] = useState("");
-  const [imageCIDdata, setImageCIDdata] = useState("");
   const [imageView, setImageView] = useState("");
+  const [nftCollectionData, setNftCollectionData] = useState("");
 
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
 
   useEffect(() => {
-    console.log("imagecid updated");
-  }, [imageView]);
+    console.log("new minted");
+    // fetchNFTCollection();
+  }, [openseaLink]);
 
   const checkIfWalletIsConnected = async () => {
     const { ethereum } = window;
@@ -38,6 +39,7 @@ const App = () => {
       return;
     } else {
       console.log("We have the ethereum object", ethereum);
+      fetchNFTCollection();
     }
 
     const accounts = await ethereum.request({ method: "eth_accounts" });
@@ -123,9 +125,6 @@ const App = () => {
           setRaribleLink(
             `https://rinkeby.rarible.com/token/${CONTRACT_ADDRESS}:${tokenId.toNumber()}`
           );
-          // alert(
-          //   `Hey there! We've minted your NFT and sent it to your wallet. It may be blank right now. It can take a max of 10 min to show up on OpenSea. Here's the link: https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId.toNumber()}`
-          // );
         });
 
         console.log("Setup event listener!");
@@ -137,83 +136,53 @@ const App = () => {
     }
   };
 
-  //create the NFT JSON file that will be saved to NFT Storage
-  const createNFT = async () => {
-    console.log("create nft");
-    //{
-    // "name": "Their name + Filecoin @ NFTHack 2022"
-    // "description": "NFT created for EthGlobal NFTHack 2022 and limited to 100 tokens"
-    // "image": //IPFS pinned image content CID
-    // "other data like version, strenth, etc....": ""
-    // }
-    // const apiKey = "YOUR_API_KEY";
-    // process.env.REACT_APP_NFT_STORAGE_API_KEY;
-    // const client = new NFTStorage({ token: apiKey });
-    // const metadata = await client.store({
-    //   name: "Pinpie",
-    //   description: "Pin is not delicious beef!",
-    //   image: new File(
-    //     [
-    //       /* data */
-    //     ],
-    //     "pinpie.jpg",
-    //     { type: "image/jpg" }
-    //   ),
-    // });
-    // console.log(metadata.url);
-    console.log(client);
-    await saveImageDatatoNFTStorage();
-  };
-
   //Create the IPFS CID of the image data
-  const saveImageDatatoNFTStorage = async () => {
-    const CID = await client.storeBlob(
-      new Blob([
-        `${baseSVG}${name}</text>
-  </svg>`,
-      ])
-    );
-    console.log("cid", CID);
-    const status = await client.status(CID);
-    console.log("status", status);
-    setImageCIDdata(status);
-    setImageView(`https://ipfs.io/ipfs/${CID}`);
-    saveDataToNFTSorage(CID, status);
-  };
+  // const saveImageDatatoNFTStorage = async () => {
+  //   const CID = await client.storeBlob(
+  //     new Blob([
+  //       `${baseSVG}${name}</text>
+  // </svg>`,
+  //     ])
+  //   );
+  //   console.log("cid", CID);
+  //   const status = await client.status(CID);
+  //   console.log("status", status);
+  //   setImageCIDdata(status);
+  //   setImageView(`https://ipfs.io/ipfs/${CID}`);
+  //   saveDataToNFTSorage(CID);
+  // };
 
   //Create the IPFS CID of the json data
-  const saveDataToNFTSorage = async (CID, status) => {
+  const createNFTData = async () => {
     //lets load up this token with some metadata and save it to NFT.storage as well
-    let imgSVG = window.btoa(`${baseSVG}${name}</text>
-      </svg>`);
-    // console.log(`url(data:image/svg+xml;base64,${imgSVG})`);
-    console.log(`ipfs://${CID}`);
     const metadata = await client.store({
       name: `${name}: Filecoin @ NFTHack 2022`,
       description:
         "NFT created for EthGlobal NFTHack 2022 and limited to 100 personalised tokens",
-      // image: `ipfs://${CID}`,
       image: new File(
         [
           `${baseSVG}${name}</text>
       </svg>`,
         ],
-        `${name}AtFilecoinNFTHack.svg`,
+        `FilecoinNFTHack.svg`,
         {
           type: "image/svg+xml",
         }
       ),
-      created: status.created,
       traits: {
         awesomeness: "100", //probs should use 0-1 for solidity
       },
     });
-    console.log("meta meta", metadata);
-    console.log("metadata", metadata.url);
-    askContractToMintNft();
+
+    let imgViewArray = metadata.data.image.pathname.split("/");
+    const imgView = `https://${imgViewArray[2]}.ipfs.dweb.link/${imgViewArray[3]}`;
+    setImageView(imgView);
+    const status = await client.status(metadata.ipnft);
+    console.log("status", status);
+    askContractToMintNft(metadata.url);
   };
 
-  const askContractToMintNft = async () => {
+  const askContractToMintNft = async (IPFSurl) => {
     console.log("name value", name);
     try {
       const { ethereum } = window;
@@ -228,7 +197,7 @@ const App = () => {
         );
 
         console.log("Going to pop wallet now to pay gas...");
-        let nftTxn = await connectedContract.mintMyNFT();
+        let nftTxn = await connectedContract.mintMyNFT(IPFSurl);
 
         console.log("Mining...please wait.");
         await nftTxn.wait();
@@ -238,12 +207,48 @@ const App = () => {
         console.log(
           `Mined, see transaction: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`
         );
+        //these look wrong...
         console.log(
           `See nft on opensea: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`
         );
         console.log(
           `See it on rarible: https://rinkeby.rarible.com/token/${CONTRACT_ADDRESS}:{tokenID}`
         );
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchNFTCollection = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const connectedContract = new ethers.Contract(
+          CONTRACT_ADDRESS,
+          filecoinNFTHack.abi,
+          signer
+        );
+
+        console.log("Going to pop wallet now to pay gas...");
+        let collection = await connectedContract.getNFTCollection();
+
+        console.log("Fetching...please wait.");
+        console.log(`Got Collection`, collection);
+        setNftCollectionData(collection);
+        let link = collection[0][1].split("/");
+        console.log(link);
+        let fetchURL = `https:${link[2]}.ipfs.dweb.link/${link[3]}`;
+        fetch(fetchURL)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+          });
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -276,7 +281,7 @@ const App = () => {
         />
       </p>
       <button
-        onClick={createNFT}
+        onClick={createNFTData}
         className={
           name
             ? "cta-button connect-wallet-button"
@@ -339,7 +344,10 @@ const App = () => {
       <div className="container">
         <div className="header-container">
           <p className="header gradient-text">NFTHack NFT Collection</p>
-          <p className="sub-text">100 personalised copies only!</p>
+          <p className="sub-text">
+            Limited edition! 100 personalised NFTs made by Filecoin for
+            EthGlobal NFTHack 2022
+          </p>
           {currentAccount === ""
             ? renderNotConnectedContainer()
             : renderMintUI()}

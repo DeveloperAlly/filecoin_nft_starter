@@ -67,4 +67,8 @@ contract FilecoinNFTHack is ERC721URIStorage {
     function getNFTCollection() public view returns (myNFT [] memory) {
         return nftCollection;
     }
+
+    function getRemainingMintableNFTs() public view returns (uint256) {
+        return remainingMintableNFTs;
+    }
 }

@@ -14,12 +14,9 @@ const main = async () => {
   console.log("Contract deployed to:", nftContract.address);
 
   // Call the function will base svg and the name?
-  let txn = await nftContract.makeAnEpicNFT("Ally");
-  // Wait for it to be mined.
-  await txn.wait();
-
-  // Mint another NFT for fun.
-  txn = await nftContract.makeAnEpicNFT("DeveloperAlly");
+  let txn = await nftContract.mintMyNFT(
+    "ipfs://bafyreiah6nfc5ht2rifpnwuqssq6mkxhtjurrrcgnn7ms42d755edt7nqy/metadata.json"
+  );
   // Wait for it to be mined.
   await txn.wait();
 };

@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "hardhat/console.sol"; //alows for console.logs in a solidity contract"
 
 //extending from 
-contract FilecoinNFTHack is ERC721URIStorage {
+contract FilecoinNFTHackOLD is ERC721URIStorage {
     // Variables
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
