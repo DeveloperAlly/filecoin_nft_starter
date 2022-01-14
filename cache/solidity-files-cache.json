@@ -549,8 +549,8 @@
       ]
     },
     "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/contracts/FilecoinNFTHack.sol": {
-      "lastModificationDate": 1642038894047,
-      "contentHash": "bfd8972a6d9aeaf465edcb3950d9558e",
+      "lastModificationDate": 1642127931848,
+      "contentHash": "ba09e9b8a07b3656c5c629d3111b46c1",
       "sourceName": "contracts/FilecoinNFTHack.sol",
       "solcConfig": {
         "version": "0.8.4",

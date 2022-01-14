@@ -50,17 +50,13 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    // setUpEventListener();
+    setUpEventListener();
     fetchNFTCollection();
   }, [currentAccount]);
 
   useEffect(() => {
     console.log("data", nftCollectionData);
   }, [nftCollectionData]);
-
-  useEffect(() => {
-    console.log("linksObj changed", linksObj);
-  });
 
   const checkIfWalletIsConnected = async () => {
     const { ethereum } = window;
@@ -70,6 +66,7 @@ const App = () => {
       return;
     } else {
       console.log("We have the ethereum object", ethereum);
+      setUpEventListener();
     }
 
     const accounts = await ethereum.request({ method: "eth_accounts" });
@@ -125,9 +122,13 @@ const App = () => {
         connectedContract.on("RemainingMintableNFTChange", (remainingNFTs) => {
           setRemainingNFTs(remainingNFTs);
         });
-        connectedContract.on("NewFilecoinNFTMinted", (remainingNFTs) => {
-          fetchNFTCollection();
-        });
+        connectedContract.on(
+          "NewFilecoinNFTMinted",
+          (sender, tokenId, tokenURI) => {
+            console.log("event - new minted NFT");
+            fetchNFTCollection();
+          }
+        );
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -149,12 +150,11 @@ const App = () => {
           signer
         );
         let remainingNFTs = await connectedContract.remainingMintableNFTs();
-        console.log("remaining", remainingNFTs.toNumber());
         setRemainingNFTs(remainingNFTs.toNumber());
         let collection = await connectedContract.getNFTCollection();
 
-        console.log(`Got Collection`, collection);
         setNftCollectionData(collection);
+        console.log("collection", collection);
 
         /***
          * Going to put these in the view collection
@@ -164,20 +164,16 @@ const App = () => {
           .reverse()
           .slice(0, 5)
           .map((el) => {
-            console.log("element", el);
             return el;
           });
 
         let imgURLs = await Promise.all(
           dataCollection.map(async (el) => {
+            console.log("nft data", el);
             let link = el[1].split("/");
             let fetchURL = `https:${link[2]}.ipfs.dweb.link/${link[3]}`;
             const response = await fetch(fetchURL);
             const json = await response.json();
-            console.log("linkimgurls", json);
-            // let imgURL = await json.image.split("/");
-            // json.imgURL = `https:${imgURL[2]}.ipfs.dweb.link/${link[3]}`;
-            // console.log("json", json);
             return json;
           })
         );
@@ -200,10 +196,13 @@ const App = () => {
       <div className="nft-viewer-outer">
         <p className="sub-text">Most Recently Minted</p>
         <div className="nft-viewer-container">
-          {myLinks.map((el) => {
+          {recentlyMinted.map((el, idx) => {
+            let linkArr = el.image.split("/");
+            let link = `https:${linkArr[2]}.ipfs.dweb.link/${linkArr[3]}`;
             return (
-              <div className="nft-viewer-column" id={el}>
-                {renderImagePreview(el)}
+              <div className="nft-viewer-column" key={idx}>
+                {renderImagePreview(link)}
+                <p>Name: {el.name}</p>
               </div>
             );
           })}
@@ -214,6 +213,7 @@ const App = () => {
 
   //Create the IPFS CID of the json data
   const createNFTData = async () => {
+    console.log("saving to NFT storage");
     //lets load up this token with some metadata and our image and save it to NFT.storage
     //need status indicators
     setTransactionState({
@@ -252,7 +252,10 @@ const App = () => {
           setImageView(
             `https://${imgViewArray[2]}.ipfs.dweb.link/${imgViewArray[3]}`
           );
-          console.log("linksObjMeta", linksObj);
+          console.log(
+            "image view set",
+            `https://${imgViewArray[2]}.ipfs.dweb.link/${imgViewArray[3]}`
+          );
           // const status = await client.status(metadata.ipnft);
           // console.log("status", status);
           askContractToMintNft(metadata.url);
@@ -268,7 +271,6 @@ const App = () => {
 
   const askContractToMintNft = async (IPFSurl) => {
     //should check the wallet chain is correct here
-    console.log("name value", name);
     setTransactionState({
       ...INITIAL_TRANSACTION_STATE,
       loading: "Approving & minting NFT...",
@@ -387,7 +389,6 @@ const App = () => {
   );
 
   const renderImagePreview = (imgLink) => {
-    console.log("image", imgLink);
     return (
       <div>
         <img
