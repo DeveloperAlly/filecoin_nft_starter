@@ -172,9 +172,14 @@ const App = () => {
             let link = el[1].split("/");
             let fetchURL = `https:${link[2]}.ipfs.dweb.link/${link[3]}`;
             console.log("fetchURL", fetchURL);
-            const response = await fetch(fetchURL);
+            const response = await fetch(fetchURL, {
+              method : "GET",
+              mode: 'cors',
+              headers: {}
+          });
 
             console.log("response", response)
+            console.log(response.json().stringify())
 
             response.url = response.url.replace("shrill-wave-1303.on.fleek.co/", "")
 
