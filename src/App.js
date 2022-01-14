@@ -1,13 +1,25 @@
-import "./styles/App.css";
 import React, { useState, useEffect } from "react";
-import { ethers } from "ethers";
-import Layout from "./components/Layout";
-import filecoinNFTHack from "./utils/FilecoinNFTHack.json";
-import { baseSVG } from "./utils/BaseSVG";
-import Box from "@mui/material/Box";
-import LinearProgress from "@mui/material/LinearProgress";
 
+/* ERC71 based Solidity Contract Interface */
+import filecoinNFTHack from "./utils/FilecoinNFTHack.json";
+
+/* NFT.Storage import for creating an IPFS CID & storing with Filecoin */
 import { NFTStorage, File } from "nft.storage";
+import { baseSVG } from "./utils/BaseSVG";
+
+/* Javascript Lib for evm-compatible blockchain contracts */
+import { ethers } from "ethers";
+
+/* UI Components & Style*/
+import "./styles/App.css";
+import Layout from "./components/Layout";
+import MintNFTInput from "./components/MintNFTInput";
+import Status from "./components/Status";
+import ImagePreview from "./components/ImagePreview";
+import Link from "./components/Link";
+import DisplayLinks from "./components/DisplayLinks";
+import ConnectWalletButton from "./components/ConnectWalletButton";
+import NFTViewer from "./components/NFTViewer";
 
 const INITIAL_LINK_STATE = {
   etherscan: "",
@@ -25,9 +37,6 @@ const INITIAL_TRANSACTION_STATE = {
 const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 
 const App = () => {
-  const client = new NFTStorage({
-    token: process.env.REACT_APP_NFT_STORAGE_API_KEY,
-  });
   const [currentAccount, setCurrentAccount] = useState("");
   const [name, setName] = useState("");
   const [linksObj, setLinksObj] = useState(INITIAL_LINK_STATE);
@@ -38,7 +47,7 @@ const App = () => {
   const [transactionState, setTransactionState] = useState(
     INITIAL_TRANSACTION_STATE
   );
-  const { loading, error, success } = transactionState;
+  const { loading, error, success } = transactionState; //make it easier
 
   /**
    * Runs once when page loads
@@ -104,6 +113,7 @@ const App = () => {
     }
   };
 
+  /* Listens for events emitted from the solidity contract, to render data accurately */
   const setUpEventListener = async () => {
     try {
       const { ethereum } = window;
@@ -214,7 +224,7 @@ const App = () => {
             let link = `https://${linkArr[2]}.ipfs.dweb.link/${linkArr[3]}`;
             return (
               <div className="nft-viewer-column" key={idx}>
-                {renderImagePreview(link)}
+                {<ImagePreview imgLink={link}/>}
                 <p>Name: {el.name}</p>
               </div>
             );
@@ -224,16 +234,46 @@ const App = () => {
     );
   };
 
-  //Create the IPFS CID of the json data
+  /* Util function for createNFTData */
+  const resetState = () => {
+    setLinksObj(INITIAL_LINK_STATE);
+    setName("");
+    setImageView("");
+  }
+
+  /* Util function for createNFTData */
+  const createImageView = (metadata) => {
+    let imgViewArray = metadata.data.image.pathname.split("/");
+    let imgViewString = `https://${imgViewArray[2]}.ipfs.dweb.link/${imgViewArray[3]}`;
+    setImageView(
+      imgViewString
+    );
+    console.log(
+      "image view set",
+      `https://${imgViewArray[2]}.ipfs.dweb.link/${imgViewArray[3]}`
+    );
+  } 
+
+  /* Create the IPFS CID of the json data */
   const createNFTData = async () => {
     console.log("saving to NFT storage");
-    //lets load up this token with some metadata and our image and save it to NFT.storage
-    //need status indicators
+    resetState();
     setTransactionState({
       ...INITIAL_TRANSACTION_STATE,
       loading: "Saving NFT data to NFT.Storage...",
     });
-    setImageView("");
+
+    // install it
+    // Set Up the NFT.Storage Client
+    const client = new NFTStorage({
+      token: process.env.REACT_APP_NFT_STORAGE_API_KEY,
+    });
+
+    //lets load up this token with some metadata and our image and save it to NFT.storage
+    //image contains any File or Blob you want to save
+    //name, image, description, other traits.
+    // useBlob to save one item to IPFS
+    // use File to save all the json metadata needed - much like any object storage you're familiar with!
     try {
       await client
         .store({
@@ -257,21 +297,24 @@ const App = () => {
         .then((metadata) => {
           setTransactionState({
             ...transactionState,
-            success: "Saved NFT data to NFT.Storage...",
+            success: "Saved NFT data to NFT.Storage...!! We created an IPFS CID & made a Filecoin Storage Deal with one call!",
             loading: "",
           });
           console.log("metadata saved", metadata);
-          let imgViewArray = metadata.data.image.pathname.split("/");
-          let imgViewString = `https://${imgViewArray[2]}.ipfs.dweb.link/${imgViewArray[3]}`;
-          setImageView(
-            imgViewString
-          );
-          console.log(
-            "image view set",
-            `https://${imgViewArray[2]}.ipfs.dweb.link/${imgViewArray[3]}`
-          );
+
+          // To view the data we just saved in the browser we need to use an IPFS http bridge
+          // Or Brave Browser which has IPFS integration built into it
+          // Or run a local IPFS node (there's a desktop app)
+          // This means manipulating the returned CID to configure it for a gateway...
+          // Check gateways & their functionality here: https://ipfs.github.io/public-gateway-checker/
+          createImageView(metadata);
+          
+          //we can also check the status of our data using this
           // const status = await client.status(metadata.ipnft);
           // console.log("status", status);
+
+          // Now that we have a CID and our data is stored on Filecoin, 
+          // - we'll mint the NFT with the token data (and IPFS CID)
           askContractToMintNft(metadata.url);
         });
     } catch (error) {
@@ -283,6 +326,7 @@ const App = () => {
     }
   };
 
+  /* Mint the NFT on the eth blockchain */
   const askContractToMintNft = async (IPFSurl) => {
     //should check the wallet chain is correct here
     setTransactionState({
@@ -339,114 +383,21 @@ const App = () => {
     }
   };
 
-  const renderStatus = () => {
-    const { loading, error, success } = transactionState;
-    return (
-      <div
-        style={{
-          height: `${loading ? "100px" : "50px"}`,
-          width: "100%",
-          display: "flex",
-          color: "white",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-        }}
-      >
-        <Box sx={{ width: "30%" }}>
-          {loading ? loading : success ? success : error}
-        </Box>
-        {loading && (
-          <Box sx={{ width: "20%", marginTop: "30px" }}>
-            <LinearProgress />
-          </Box>
-        )}
-      </div>
-    );
-  };
-
-  // Render Methods
-  const renderNotConnectedContainer = () => (
-    <button
-      onClick={connectWallet}
-      className="cta-button connect-to-wallet-button"
-    >
-      Connect to Wallet
-    </button>
-  );
-
-  const renderMintUI = () => (
-    <div>
-      <p>
-        <input
-          className="input"
-          placeholder="Enter your name"
-          type="text"
-          // pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$"
-          required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </p>
-      <button
-        onClick={createNFTData}
-        className={
-          name
-            ? "cta-button connect-wallet-button"
-            : "cta-button connect-wallet-button-disabled"
-        }
-        disabled={!name || transactionState.loading}
-      >
-        Mint NFT
-      </button>
-    </div>
-  );
-
-  const renderImagePreview = (imgLink) => {
-    return (
-      <div>
-        <img
-          src={imgLink}
-          alt="NFT image preview"
-          height="200px"
-          width="200px"
-          style={{ backgroundColor: "white" }}
-        />
-      </div>
-    );
-  };
-
-  const renderLink = (link, description) => {
-    return (
-      <p>
-        <a className="footer-text" href={link} target="_blank" rel="noreferrer">
-          {description}
-        </a>
-      </p>
-    );
-  };
-
   return (
     <Layout connected={currentAccount === ""} connectWallet={connectWallet}>
       <>
         <p className="sub-sub-text">{`Remaining NFTS: ${remainingNFTs}`}</p>
-        {transactionState !== INITIAL_TRANSACTION_STATE && renderStatus()}
+        {transactionState !== INITIAL_TRANSACTION_STATE && <Status transactionState={transactionState}/>}
         {imageView &&
-          !linksObj.etherscan &&
-          renderLink(imageView, "See IPFS image link")}
-        {imageView && renderImagePreview(imageView)}
-        {linksObj.etherscan &&
-          renderLink(linksObj.etherscan, "See your Transaction on Etherscan")}
-        {linksObj.opensea &&
-          renderLink(linksObj.opensea, "See your NFT on OpenSea")}
-        {linksObj.rarible &&
-          renderLink(linksObj.rarible, "See your NFT on Rarible")}
+          !linksObj.etherscan && <Link link={imageView} description="See IPFS image link"/>}
+        {imageView && <ImagePreview imgLink ={imageView}/>}
+        {linksObj.etherscan && <DisplayLinks linksObj={linksObj} />}
         {currentAccount === "" ? (
-          renderNotConnectedContainer()
+          <ConnectWalletButton connectWallet={connectWallet}/>
         ) : transactionState.loading ? (
           <div />
         ) : (
-          renderMintUI()
+          <MintNFTInput name={name} setName={setName} transactionState={transactionState} createNFTData={createNFTData}/>
         )}
         {recentlyMinted && renderMostRecentlyMinted()}
       </>

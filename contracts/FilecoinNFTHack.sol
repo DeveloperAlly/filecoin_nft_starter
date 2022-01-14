@@ -25,7 +25,7 @@ contract FilecoinNFTHack is ERC721URIStorage {
     {
         "name": "Their name + Filecoin @ NFTHack 2022"
         "description": "NFT created for EthGlobal NFTHack 2022 and limited to 100 tokens"
-        "image": //IPFS pinned image content CID
+        "image": //IPFS pinned file content CID (can be any mime type)
         "other data like version, strenth, etc....": ""
     }
     */

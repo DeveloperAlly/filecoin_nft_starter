@@ -1,24 +1,27 @@
-# Basic Sample Hardhat Project
+# Info
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+This project is a simple ERC721 (ethereum) NFT minting contract & user interface.
+It uses IPFS Protocol to create unique CIDs that point to the NFT data, it then stores this information on Filecoin for reliable & persistent storage.
 
-Try running some of the following tasks:
+It takes advantage of the very handy IPFS & Filecoin dev ecosystem tool NFT.Storage to make doing this easy (& free!).
 
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
-```
+The DApp UI is deployed on fleek.co. Fleek makes it easy to deploy websites and apps on the new open web: permissionless, trustless, censorship resistant, and free of centralized gatekeepers.
+
+You can see the project live here: https://shrill-wave-1303.on.fleek.co/ 
+
+
+# Read-me still a work in progress.... watch this git commit! XD
+
+Dev Things (contracts):
+- Solidity
+- Hardhat
+- Alchemy 
 
 Ways to save your NFT SVG
 
 1. You can save it in the contrct itself
 2. You can save it as an IPFS CID
-3. You can use web2 (we wouldn't do that though would we!)
+3. You can use web2... (we wouldn't do that though would we!)
 
 Run contract: npx hardhat
 
