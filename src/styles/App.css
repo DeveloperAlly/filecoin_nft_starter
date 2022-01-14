@@ -176,3 +176,16 @@
   font-size: 16px;
   font-weight: bold;
 }
+
+.nft-viewer-container {
+  height: 250px;
+  color: white;
+  width: 100%;
+  display: flex;
+}
+
+.nft-viewer-column {
+  width: 20%;
+  min-height: 100px;
+  margin: 10px;
+}

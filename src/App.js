@@ -9,6 +9,7 @@ import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 
 import { NFTStorage, File } from "nft.storage";
+import { linkClasses } from "@mui/material";
 
 const INITIAL_LINK_STATE = {
   etherscan: "",
@@ -35,6 +36,7 @@ const App = () => {
   const [imageView, setImageView] = useState("");
   const [remainingNFTs, setRemainingNFTs] = useState("");
   const [nftCollectionData, setNftCollectionData] = useState("");
+  const [recentlyMinted, setRecentlyMinted] = useState("");
   const [transactionState, setTransactionState] = useState(
     INITIAL_TRANSACTION_STATE
   );
@@ -51,6 +53,10 @@ const App = () => {
     // setUpEventListener();
     fetchNFTCollection();
   }, [currentAccount]);
+
+  useEffect(() => {
+    console.log("data", nftCollectionData);
+  }, [nftCollectionData]);
 
   useEffect(() => {
     console.log("linksObj changed", linksObj);
@@ -147,21 +153,60 @@ const App = () => {
         console.log(`Got Collection`, collection);
         setNftCollectionData(collection);
 
-        //testing fetching data to display image
-        let link = collection[0][1].split("/");
-        console.log(link);
-        let fetchURL = `https:${link[2]}.ipfs.dweb.link/${link[3]}`;
-        fetch(fetchURL)
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data);
+        /***
+         * Going to put these in the view collection
+         */
+        let dataCollection = collection
+          .slice()
+          .reverse()
+          .slice(0, 5)
+          .map((el) => {
+            console.log("element", el);
+            return el;
           });
+
+        let imgURLs = await Promise.all(
+          dataCollection.map(async (el) => {
+            let link = el[1].split("/");
+            let fetchURL = `https:${link[2]}.ipfs.dweb.link/${link[3]}`;
+            const response = await fetch(fetchURL);
+            const json = await response.json();
+            console.log("linkimgurls", json);
+            // let imgURL = await json.image.split("/");
+            // json.imgURL = `https:${imgURL[2]}.ipfs.dweb.link/${link[3]}`;
+            // console.log("json", json);
+            return json;
+          })
+        );
+        console.log("imgURLs2", imgURLs);
+        setRecentlyMinted(imgURLs);
       } else {
         console.log("Ethereum object doesn't exist!");
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const renderMostRecentlyMinted = () => {
+    let myLinks = recentlyMinted.map((el) => {
+      let link = el.image.split("/");
+      return `https:${link[2]}.ipfs.dweb.link/${link[3]}`;
+    });
+    return (
+      <>
+        <p className="sub-text">Most Recently Minted</p>
+        <div className="nft-viewer-container">
+          {myLinks.map((el) => {
+            return (
+              <div className="nft-viewer-column" id={el}>
+                {renderImagePreview(el)}
+              </div>
+            );
+          })}
+        </div>
+      </>
+    );
   };
 
   //Create the IPFS CID of the json data
@@ -338,12 +383,12 @@ const App = () => {
     </div>
   );
 
-  const renderImagePreview = () => {
-    console.log("image", imageView);
+  const renderImagePreview = (imgLink) => {
+    console.log("image", imgLink);
     return (
       <div>
         <img
-          src={imageView}
+          src={imgLink}
           alt="NFT image preview"
           height="200px"
           width="200px"
@@ -371,7 +416,7 @@ const App = () => {
         {imageView &&
           !linksObj.etherscan &&
           renderLink(imageView, "See IPFS image link")}
-        {imageView && renderImagePreview()}
+        {imageView && renderImagePreview(imageView)}
         {linksObj.etherscan &&
           renderLink(linksObj.etherscan, "See your Transaction on Etherscan")}
         {linksObj.opensea &&
@@ -385,6 +430,7 @@ const App = () => {
         ) : (
           renderMintUI()
         )}
+        {recentlyMinted && renderMostRecentlyMinted()}
       </>
     </Layout>
   );
