@@ -7,13 +7,14 @@ const { loading, error, success } = props.transactionState;
     return (
     <div
         style={{
-        height: `${loading ? "100px" : "50px"}`,
         width: "100%",
         display: "flex",
         color: "white",
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "column",
+        marginBotton: "15px",
+        marginTop: "15px",
         }}
     >
         <Box sx={{ width: "30%" }}>
