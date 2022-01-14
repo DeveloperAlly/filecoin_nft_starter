@@ -251,8 +251,9 @@ const App = () => {
           });
           console.log("metadata saved", metadata);
           let imgViewArray = metadata.data.image.pathname.split("/");
+          let imgViewString = `https://${imgViewArray[2]}.ipfs.dweb.link/${imgViewArray[3]}`;
           setImageView(
-            `https://${imgViewArray[2]}.ipfs.dweb.link/${imgViewArray[3]}`
+            imgViewString
           );
           console.log(
             "image view set",
