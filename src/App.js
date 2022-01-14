@@ -378,7 +378,7 @@ const App = () => {
   return (
     <Layout connected={currentAccount === ""} connectWallet={connectWallet}>
       <>
-        <p className="sub-sub-text">{`Remaining NFTS: ${remainingNFTs}`}</p>
+        <p className="sub-sub-text">{`Remaining NFT's: ${remainingNFTs}`}</p>
         {transactionState !== INITIAL_TRANSACTION_STATE && <Status transactionState={transactionState}/>}
         {imageView &&
           !linksObj.etherscan && <Link link={imageView} description="See IPFS image link"/>}

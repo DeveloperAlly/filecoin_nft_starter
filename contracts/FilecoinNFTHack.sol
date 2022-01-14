@@ -19,6 +19,7 @@ contract FilecoinNFTHack is ERC721URIStorage {
         string tokenURI;
         uint256 tokenId;
     }
+    
     myNFT [] public nftCollection;
 
     /* tokenURI

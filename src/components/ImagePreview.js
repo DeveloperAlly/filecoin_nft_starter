@@ -2,7 +2,7 @@ import React from "react";
 
 const ImagePreview = ({imgLink, ...props}) => {
 return(
-      <div>
+    <div style={{marginTop: "20px"}}>
       <img
         src={imgLink}
         alt="NFT image preview"

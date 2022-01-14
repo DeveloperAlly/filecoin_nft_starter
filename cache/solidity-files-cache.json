@@ -1,8 +1,47 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol": {
-      "lastModificationDate": 1641947784724,
+    "/Users/developerally/Desktop/Code/Presentations/filecoin_nft_starter/contracts/FilecoinNFTHack.sol": {
+      "lastModificationDate": 1642180893321,
+      "contentHash": "78c17c156c386f310e63e79b33080363",
+      "sourceName": "contracts/FilecoinNFTHack.sol",
+      "solcConfig": {
+        "version": "0.8.4",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        "@openzeppelin/contracts/utils/Counters.sol",
+        "hardhat/console.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "FilecoinNFTHack"
+      ]
+    },
+    "/Users/developerally/Desktop/Code/Presentations/filecoin_nft_starter/node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol": {
+      "lastModificationDate": 1642154239119,
       "contentHash": "580a443491d9d70eb064b0130fc3cd01",
       "sourceName": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
       "solcConfig": {
@@ -38,8 +77,8 @@
         "ERC721URIStorage"
       ]
     },
-    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/node_modules/@openzeppelin/contracts/utils/Counters.sol": {
-      "lastModificationDate": 1641947759722,
+    "/Users/developerally/Desktop/Code/Presentations/filecoin_nft_starter/node_modules/@openzeppelin/contracts/utils/Counters.sol": {
+      "lastModificationDate": 1642154239112,
       "contentHash": "74654e3ae5d7f39555055dfe244dab7a",
       "sourceName": "@openzeppelin/contracts/utils/Counters.sol",
       "solcConfig": {
@@ -73,8 +112,8 @@
         "Counters"
       ]
     },
-    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/node_modules/hardhat/console.sol": {
-      "lastModificationDate": 1641954824911,
+    "/Users/developerally/Desktop/Code/Presentations/filecoin_nft_starter/node_modules/hardhat/console.sol": {
+      "lastModificationDate": 1642154235049,
       "contentHash": "cc4777addd464ea56fa35b1c45df0591",
       "sourceName": "hardhat/console.sol",
       "solcConfig": {
@@ -108,43 +147,8 @@
         "console"
       ]
     },
-    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/contracts/libraries/Base64.sol": {
-      "lastModificationDate": 1641950898949,
-      "contentHash": "26f9dcf88ed4b6d37ce96d1caf755cbe",
-      "sourceName": "contracts/libraries/Base64.sol",
-      "solcConfig": {
-        "version": "0.8.4",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "Base64"
-      ]
-    },
-    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol": {
-      "lastModificationDate": 1641947781446,
+    "/Users/developerally/Desktop/Code/Presentations/filecoin_nft_starter/node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol": {
+      "lastModificationDate": 1642154239118,
       "contentHash": "ead7082e39cf31875ff89b22f473500d",
       "sourceName": "@openzeppelin/contracts/token/ERC721/ERC721.sol",
       "solcConfig": {
@@ -186,8 +190,8 @@
         "ERC721"
       ]
     },
-    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol": {
-      "lastModificationDate": 1641947784323,
+    "/Users/developerally/Desktop/Code/Presentations/filecoin_nft_starter/node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol": {
+      "lastModificationDate": 1642154239122,
       "contentHash": "27d219ec6f69478d065fdbfa7931da68",
       "sourceName": "@openzeppelin/contracts/token/ERC721/IERC721.sol",
       "solcConfig": {
@@ -223,8 +227,8 @@
         "IERC721"
       ]
     },
-    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/node_modules/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol": {
-      "lastModificationDate": 1641947784377,
+    "/Users/developerally/Desktop/Code/Presentations/filecoin_nft_starter/node_modules/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol": {
+      "lastModificationDate": 1642154239122,
       "contentHash": "592df588492d45fdcf46b3cb608c0fbf",
       "sourceName": "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol",
       "solcConfig": {
@@ -258,8 +262,8 @@
         "IERC721Receiver"
       ]
     },
-    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol": {
-      "lastModificationDate": 1641947784876,
+    "/Users/developerally/Desktop/Code/Presentations/filecoin_nft_starter/node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol": {
+      "lastModificationDate": 1642154239122,
       "contentHash": "efbc0d15b80a74e34dbe8da0f3e879bb",
       "sourceName": "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol",
       "solcConfig": {
@@ -295,8 +299,8 @@
         "IERC721Metadata"
       ]
     },
-    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/node_modules/@openzeppelin/contracts/utils/Address.sol": {
-      "lastModificationDate": 1641947759421,
+    "/Users/developerally/Desktop/Code/Presentations/filecoin_nft_starter/node_modules/@openzeppelin/contracts/utils/Address.sol": {
+      "lastModificationDate": 1642154239111,
       "contentHash": "4cff8b2ea0d958750786b4e3ca308445",
       "sourceName": "@openzeppelin/contracts/utils/Address.sol",
       "solcConfig": {
@@ -330,8 +334,8 @@
         "Address"
       ]
     },
-    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/node_modules/@openzeppelin/contracts/utils/Context.sol": {
-      "lastModificationDate": 1641947759622,
+    "/Users/developerally/Desktop/Code/Presentations/filecoin_nft_starter/node_modules/@openzeppelin/contracts/utils/Context.sol": {
+      "lastModificationDate": 1642154239112,
       "contentHash": "5f2c5c4b6af2dd4551027144797bc8be",
       "sourceName": "@openzeppelin/contracts/utils/Context.sol",
       "solcConfig": {
@@ -365,8 +369,8 @@
         "Context"
       ]
     },
-    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/node_modules/@openzeppelin/contracts/utils/Strings.sol": {
-      "lastModificationDate": 1641947785820,
+    "/Users/developerally/Desktop/Code/Presentations/filecoin_nft_starter/node_modules/@openzeppelin/contracts/utils/Strings.sol": {
+      "lastModificationDate": 1642154239126,
       "contentHash": "9c54c6c065d9e590fdcdd72c451425b9",
       "sourceName": "@openzeppelin/contracts/utils/Strings.sol",
       "solcConfig": {
@@ -400,8 +404,8 @@
         "Strings"
       ]
     },
-    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/node_modules/@openzeppelin/contracts/utils/introspection/ERC165.sol": {
-      "lastModificationDate": 1641947786215,
+    "/Users/developerally/Desktop/Code/Presentations/filecoin_nft_starter/node_modules/@openzeppelin/contracts/utils/introspection/ERC165.sol": {
+      "lastModificationDate": 1642154239115,
       "contentHash": "0e7db055ce108f9da7bb6686a00287c0",
       "sourceName": "@openzeppelin/contracts/utils/introspection/ERC165.sol",
       "solcConfig": {
@@ -437,8 +441,8 @@
         "ERC165"
       ]
     },
-    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/node_modules/@openzeppelin/contracts/utils/introspection/IERC165.sol": {
-      "lastModificationDate": 1641947786474,
+    "/Users/developerally/Desktop/Code/Presentations/filecoin_nft_starter/node_modules/@openzeppelin/contracts/utils/introspection/IERC165.sol": {
+      "lastModificationDate": 1642154239121,
       "contentHash": "03e6768535ac4da0e9756f1d8a4a018a",
       "sourceName": "@openzeppelin/contracts/utils/introspection/IERC165.sol",
       "solcConfig": {
@@ -472,45 +476,8 @@
         "IERC165"
       ]
     },
-    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/contracts/Greeter.sol": {
-      "lastModificationDate": 1641954777458,
-      "contentHash": "54c28c84e5277b35b8c8329ce9755dae",
-      "sourceName": "contracts/Greeter.sol",
-      "solcConfig": {
-        "version": "0.8.4",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "hardhat/console.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "Greeter"
-      ]
-    },
-    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/contracts/Test.sol": {
-      "lastModificationDate": 1642054417755,
+    "/Users/developerally/Desktop/Code/Presentations/filecoin_nft_starter/contracts/Test.sol": {
+      "lastModificationDate": 1642076276460,
       "contentHash": "af31fdb7e89df4e54d8095a6570ff6e9",
       "sourceName": "contracts/Test.sol",
       "solcConfig": {
@@ -548,10 +515,10 @@
         "FilecoinNFTHackOLD"
       ]
     },
-    "/Users/alisonhaire/Desktop/NFTs/ETHGlobal__NFTHack_Filecoin/contracts/FilecoinNFTHack.sol": {
-      "lastModificationDate": 1642127931848,
-      "contentHash": "ba09e9b8a07b3656c5c629d3111b46c1",
-      "sourceName": "contracts/FilecoinNFTHack.sol",
+    "/Users/developerally/Desktop/Code/Presentations/filecoin_nft_starter/contracts/Greeter.sol": {
+      "lastModificationDate": 1642076276460,
+      "contentHash": "54c28c84e5277b35b8c8329ce9755dae",
+      "sourceName": "contracts/Greeter.sol",
       "solcConfig": {
         "version": "0.8.4",
         "settings": {
@@ -576,15 +543,48 @@
         }
       },
       "imports": [
-        "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        "@openzeppelin/contracts/utils/Counters.sol",
         "hardhat/console.sol"
       ],
       "versionPragmas": [
         "^0.8.0"
       ],
       "artifacts": [
-        "FilecoinNFTHack"
+        "Greeter"
+      ]
+    },
+    "/Users/developerally/Desktop/Code/Presentations/filecoin_nft_starter/contracts/libraries/Base64.sol": {
+      "lastModificationDate": 1642076276460,
+      "contentHash": "26f9dcf88ed4b6d37ce96d1caf755cbe",
+      "sourceName": "contracts/libraries/Base64.sol",
+      "solcConfig": {
+        "version": "0.8.4",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Base64"
       ]
     }
   }
