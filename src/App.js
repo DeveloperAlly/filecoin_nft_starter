@@ -168,14 +168,14 @@ const App = () => {
 
         let imgURLs = await Promise.all(
           dataCollection.map(async (el) => {
-            console.log(el)
+            console.log("elementinURL", el)
             let link = el[1].split("/");
             let fetchURL = `https:${link[2]}.ipfs.dweb.link/${link[3]}`;
             console.log("fetchURL", fetchURL);
             const response = await fetch(fetchURL);
             console.log("response", response)
             const json = await response.json();
-            console.log("json", json)
+            console.log("Responsejson", json)
             return json;
           })
         );
