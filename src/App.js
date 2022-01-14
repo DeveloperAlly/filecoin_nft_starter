@@ -170,18 +170,19 @@ const App = () => {
           dataCollection.map(async (el) => {
             console.log("elementinURL", el)
             let link = el[1].split("/");
-            let fetchURL = `https:${link[2]}.ipfs.dweb.link/${link[3]}`;
+            let fetchURL = `https://${link[2]}.ipfs.dweb.link/${link[3]}`;
             console.log("fetchURL", fetchURL);
             const response = await fetch(fetchURL, {
               method : "GET",
               mode: 'cors',
+              type: 'cors',
               headers: {}
           });
 
-            console.log("response", response)
-            console.log(response.json().stringify())
+            // console.log("response", response)
+            // console.log(response.json().stringify())
 
-            response.url = response.url.replace("shrill-wave-1303.on.fleek.co/", "")
+            // response.url = response.url.replace("shrill-wave-1303.on.fleek.co/", "")
 
             console.log("response2", response);
             const json = await response.json();
