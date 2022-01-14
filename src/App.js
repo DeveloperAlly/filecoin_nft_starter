@@ -49,22 +49,18 @@ const App = () => {
   );
   const { loading, error, success } = transactionState; //make it easier
 
-  /**
-   * Runs once when page loads
-   */
+  /* runs on page load - checks wallet is connected */
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
 
+  /* If a wallet is connected, do some setup */
   useEffect(() => {
     setUpEventListener();
     fetchNFTCollection();
   }, [currentAccount]);
 
-  useEffect(() => {
-    console.log("data", nftCollectionData);
-  }, [nftCollectionData]);
-
+  /* Check for a wallet */
   const checkIfWalletIsConnected = async () => {
     const { ethereum } = window;
 
@@ -95,6 +91,7 @@ const App = () => {
     // }
   };
 
+  /* Connect a wallet */
   const connectWallet = async () => {
     try {
       const { ethereum } = window;
@@ -145,103 +142,14 @@ const App = () => {
     }
   };
 
-  const fetchNFTCollection = async () => {
-    console.log("fetching nft collection");
-    try {
-      const { ethereum } = window;
-
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const connectedContract = new ethers.Contract(
-          CONTRACT_ADDRESS,
-          filecoinNFTHack.abi,
-          signer
-        );
-        let remainingNFTs = await connectedContract.remainingMintableNFTs();
-        setRemainingNFTs(remainingNFTs.toNumber());
-        let collection = await connectedContract.getNFTCollection();
-
-        setNftCollectionData(collection);
-        console.log("collection", collection);
-
-        /***
-         * Going to put these in the view collection
-         */
-        let dataCollection = collection
-          .slice()
-          .reverse()
-          .slice(0, 5)
-          .map((el) => {
-            return el;
-          });
-
-        let imgURLs = await Promise.all(
-          dataCollection.map(async (el) => {
-            console.log("elementinURL", el)
-            let link = el[1].split("/");
-            let fetchURL = `https://${link[2]}.ipfs.dweb.link/${link[3]}`;
-            console.log("fetchURL", fetchURL);
-            const response = await fetch(fetchURL, {
-              method : "GET",
-              mode: 'cors',
-              type: 'cors',
-              headers: {}
-          });
-
-            // console.log("response", response)
-            // console.log(response.json().stringify())
-
-            // response.url = response.url.replace("shrill-wave-1303.on.fleek.co/", "")
-
-            console.log("response2", response);
-            const json = await response.json();
-            console.log("Responsejson", json)
-            return json;
-          })
-        );
-        console.log("imgURLs2", imgURLs);
-        setRecentlyMinted(imgURLs);
-      } else {
-        console.log("Ethereum object doesn't exist!");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const renderMostRecentlyMinted = () => {
-    // let myLinks = recentlyMinted.map((el) => {
-    //   let link = el.image.split("/");
-    //   return `https:${link[2]}.ipfs.dweb.link/${link[3]}`;
-    // });
-    return (
-      <div className="nft-viewer-outer">
-        <p className="sub-text">Most Recently Minted</p>
-        <div className="nft-viewer-container">
-          {recentlyMinted.map((el, idx) => {
-            let linkArr = el.image.split("/");
-            let link = `https://${linkArr[2]}.ipfs.dweb.link/${linkArr[3]}`;
-            return (
-              <div className="nft-viewer-column" key={idx}>
-                {<ImagePreview imgLink={link}/>}
-                <p>Name: {el.name}</p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
-
-  /* Util function for createNFTData */
+  /* Helper function for createNFTData */
   const resetState = () => {
     setLinksObj(INITIAL_LINK_STATE);
     setName("");
     setImageView("");
   }
 
-  /* Util function for createNFTData */
+  /* Helper function for createNFTData */
   const createImageView = (metadata) => {
     let imgViewArray = metadata.data.image.pathname.split("/");
     let imgViewString = `https://${imgViewArray[2]}.ipfs.dweb.link/${imgViewArray[3]}`;
@@ -383,6 +291,90 @@ const App = () => {
     }
   };
 
+  /* Helper function - manipulating the returned CID into a http link using IPFS gateway */
+  const createIPFSgatewayLink = (el) => {
+    let link = el[1].split("/");
+    let fetchURL = `https://${link[2]}.ipfs.dweb.link/${link[3]}`;
+    return fetchURL;
+  }
+
+  /* 
+    Helper function for fetching the Filecoin data through IPFS gateways 
+    to display the images in the UI 
+  */
+  const createImageURLsForRetrieval = async (collection) => {
+    let dataCollection = collection
+    .slice()
+    .reverse()
+    .slice(0, 5)
+    .map((el) => {
+      return el;
+    });
+
+    let imgURLs = await Promise.all(
+      dataCollection.map(async (el) => {
+        const ipfsGatewayLink = createIPFSgatewayLink(el);
+        // let link = el[1].split("/");
+        // let fetchURL = `https://${link[2]}.ipfs.dweb.link/${link[3]}`;
+        console.log("fetchURL", ipfsGatewayLink);
+        const response = await fetch(ipfsGatewayLink, 
+      //     {
+      //     method : "GET",
+      //     mode: 'cors',
+      //     type: 'cors',
+      //     headers: {}
+      // }
+      );
+        const json = await response.json();
+        // console.log("Responsejson", json)
+        return json;
+      })
+    );
+
+    console.log("imgURLs2", imgURLs);
+    setRecentlyMinted(imgURLs);
+  }
+
+ /* Function to get our collection Data from
+    1. The blockchain
+    2. Filecoin via IPFS addressing & http gateways
+ */
+  const fetchNFTCollection = async () => {
+    console.log("fetching nft collection");
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const connectedContract = new ethers.Contract(
+          CONTRACT_ADDRESS,
+          filecoinNFTHack.abi,
+          signer
+        );
+
+        let remainingNFTs = await connectedContract.remainingMintableNFTs();
+        setRemainingNFTs(remainingNFTs.toNumber()); //update state
+
+        let collection = await connectedContract.getNFTCollection();
+        setNftCollectionData(collection); //update state
+        console.log("collection", collection);
+
+        /***
+         * Going to put these in the view collection
+         */
+        await createImageURLsForRetrieval(collection);
+
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  /* Render our page */
   return (
     <Layout connected={currentAccount === ""} connectWallet={connectWallet}>
       <>
@@ -399,7 +391,7 @@ const App = () => {
         ) : (
           <MintNFTInput name={name} setName={setName} transactionState={transactionState} createNFTData={createNFTData}/>
         )}
-        {recentlyMinted && renderMostRecentlyMinted()}
+        {recentlyMinted && <NFTViewer recentlyMinted={recentlyMinted}/>}
       </>
     </Layout>
   );
