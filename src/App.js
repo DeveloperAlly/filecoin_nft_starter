@@ -125,6 +125,9 @@ const App = () => {
         connectedContract.on("RemainingMintableNFTChange", (remainingNFTs) => {
           setRemainingNFTs(remainingNFTs);
         });
+        connectedContract.on("NewFilecoinNFTMinted", (remainingNFTs) => {
+          fetchNFTCollection();
+        });
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -194,7 +197,7 @@ const App = () => {
       return `https:${link[2]}.ipfs.dweb.link/${link[3]}`;
     });
     return (
-      <>
+      <div className="nft-viewer-outer">
         <p className="sub-text">Most Recently Minted</p>
         <div className="nft-viewer-container">
           {myLinks.map((el) => {
@@ -205,7 +208,7 @@ const App = () => {
             );
           })}
         </div>
-      </>
+      </div>
     );
   };
 
