@@ -174,6 +174,9 @@ const App = () => {
             console.log("fetchURL", fetchURL);
             const response = await fetch(fetchURL);
             console.log("response", response)
+            if (response.includes("shrill-wave-1303.on.fleek.co")) {
+              response.replace("shrill-wave-1303.on.fleek.co/", "")
+            } 
             const json = await response.json();
             console.log("Responsejson", json)
             return json;
