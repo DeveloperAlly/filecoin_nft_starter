@@ -8,11 +8,17 @@ const Layout = (props) => {
     <div className="App">
       <div className="container">
         <div className="header-menu-container">
-          <img
-            alt="Filecoin Foundation Logo"
-            style={{ height: "50px" }}
-            src={filecoinLogo}
-          />
+          <a
+            href="https://protocollabs.notion.site/Getting-started-with-IPFS-Filecoin-173c73d4d8d64765a42058594bc46bb7"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <img
+              alt="Filecoin Foundation Logo"
+              style={{ height: "50px" }}
+              src={filecoinLogo}
+            />
+          </a>
           <button
             onClick={props.connectWallet}
             className={

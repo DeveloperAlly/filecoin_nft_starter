@@ -2,14 +2,12 @@ import "./styles/App.css";
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Layout from "./components/Layout";
-// import StatusMessage from "./components/StatusMessage";
 import filecoinNFTHack from "./utils/FilecoinNFTHack.json";
 import { baseSVG } from "./utils/BaseSVG";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 
 import { NFTStorage, File } from "nft.storage";
-import { linkClasses } from "@mui/material";
 
 const INITIAL_LINK_STATE = {
   etherscan: "",
@@ -138,6 +136,7 @@ const App = () => {
   };
 
   const fetchNFTCollection = async () => {
+    console.log("fetching nft collection");
     try {
       const { ethereum } = window;
 
@@ -169,7 +168,6 @@ const App = () => {
 
         let imgURLs = await Promise.all(
           dataCollection.map(async (el) => {
-            console.log("nft data", el);
             let link = el[1].split("/");
             let fetchURL = `https:${link[2]}.ipfs.dweb.link/${link[3]}`;
             const response = await fetch(fetchURL);
@@ -188,10 +186,10 @@ const App = () => {
   };
 
   const renderMostRecentlyMinted = () => {
-    let myLinks = recentlyMinted.map((el) => {
-      let link = el.image.split("/");
-      return `https:${link[2]}.ipfs.dweb.link/${link[3]}`;
-    });
+    // let myLinks = recentlyMinted.map((el) => {
+    //   let link = el.image.split("/");
+    //   return `https:${link[2]}.ipfs.dweb.link/${link[3]}`;
+    // });
     return (
       <div className="nft-viewer-outer">
         <p className="sub-text">Most Recently Minted</p>
