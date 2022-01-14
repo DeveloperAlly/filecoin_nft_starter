@@ -173,9 +173,10 @@ const App = () => {
             let fetchURL = `https:${link[2]}.ipfs.dweb.link/${link[3]}`;
             console.log("fetchURL", fetchURL);
             const response = await fetch(fetchURL);
+
             console.log("response", response)
 
-            response = response.replace("shrill-wave-1303.on.fleek.co/", "")
+            response.url = response.url.replace("shrill-wave-1303.on.fleek.co/", "")
 
             console.log("response2", response);
             const json = await response.json();
