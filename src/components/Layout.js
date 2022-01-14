@@ -8,11 +8,7 @@ const Layout = (props) => {
     <div className="App">
       <div className="container">
         <div className="header-menu-container">
-          <a
-            href="https://protocollabs.notion.site/Getting-started-with-IPFS-Filecoin-173c73d4d8d64765a42058594bc46bb7"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://filecoin.io/build" target="_blank" rel="noreferrer">
             <img
               alt="Filecoin Foundation Logo"
               style={{ height: "50px" }}
