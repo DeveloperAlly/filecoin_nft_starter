@@ -1,7 +1,8 @@
 import "./styles/App.css";
-import twitterLogo from "./assets/twitter-logo.svg";
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
+import Layout from "./components/Layout";
+import StatusMessage from "./components/StatusMessage";
 import filecoinNFTHack from "./utils/FilecoinNFTHack.json";
 import { baseSVG } from "./utils/BaseSVG";
 
@@ -11,27 +12,41 @@ const INITIAL_LINK_STATE = {
   etherscan: "",
   opensea: "",
   rarible: "",
-  image: "",
 };
 
+const INITIAL_TRANSACTION_STATE = {
+  loading: "",
+  error: "",
+  success: "",
+  warning: "",
+};
+
+const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
+
 const App = () => {
-  const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
   const client = new NFTStorage({
     token: process.env.REACT_APP_NFT_STORAGE_API_KEY,
   });
   const [currentAccount, setCurrentAccount] = useState("");
   const [name, setName] = useState("");
-  const [links, setLinks] = useState(INITIAL_LINK_STATE);
+  const [linksObj, setLinksObj] = useState(INITIAL_LINK_STATE);
+  const [imageView, setImageView] = useState("");
   const [nftCollectionData, setNftCollectionData] = useState("");
+  const [transactionState, setTransactionState] = useState(
+    INITIAL_TRANSACTION_STATE
+  );
+  const { loading, error, success } = transactionState;
 
+  /**
+   * Runs once when page loads
+   */
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
 
-  // useEffect(() => {
-  //   console.log("new minted");
-  //   // fetchNFTCollection();
-  // }, [openseaLink]);
+  useEffect(() => {
+    console.log("linksObj changed", linksObj);
+  });
 
   const checkIfWalletIsConnected = async () => {
     const { ethereum } = window;
@@ -50,9 +65,6 @@ const App = () => {
       const account = accounts[0];
       console.log("Found an authorized account:", account);
       setCurrentAccount(account);
-      // Setup listener! This is for the case where a user comes to our site
-      // and ALREADY had their wallet connected + authorized.
-      setupEventListener();
     } else {
       console.log("No authorized account found");
     }
@@ -68,9 +80,6 @@ const App = () => {
     // }
   };
 
-  /*
-   * Implement your connectWallet method here
-   */
   const connectWallet = async () => {
     try {
       const { ethereum } = window;
@@ -79,55 +88,11 @@ const App = () => {
         alert("Get MetaMask!");
         return;
       }
-
-      /*
-       * Fancy method to request access to account.
-       */
       const accounts = await ethereum.request({
         method: "eth_requestAccounts",
       });
-
-      /*
-       * Boom! This should print out public address once we authorize Metamask.
-       */
       console.log("Connected", accounts[0]);
       setCurrentAccount(accounts[0]);
-      // Setup listener! This is for the case where a user comes to our site
-      // and connected their wallet for the first time.
-      setupEventListener();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // Setup our listener.
-  const setupEventListener = async () => {
-    // Most of this looks the same as our function askContractToMintNft
-    try {
-      const { ethereum } = window;
-
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const connectedContract = new ethers.Contract(
-          CONTRACT_ADDRESS,
-          filecoinNFTHack.abi,
-          signer
-        );
-
-        connectedContract.on("NewFilecoinNFTMinted", (from, tokenId) => {
-          console.log(from, tokenId.toNumber());
-          setLinks({
-            ...links,
-            opensea: `https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId.toNumber()}`,
-            rarible: `https://rinkeby.rarible.com/token/${CONTRACT_ADDRESS}:${tokenId.toNumber()}`,
-          });
-        });
-
-        console.log("Setup event listener!");
-      } else {
-        console.log("Ethereum object doesn't exist!");
-      }
     } catch (error) {
       console.log(error);
     }
@@ -137,37 +102,45 @@ const App = () => {
   const createNFTData = async () => {
     //lets load up this token with some metadata and our image and save it to NFT.storage
     //need status indicators
-    const metadata = await client.store({
-      name: `${name}: Filecoin @ NFTHack 2022`,
-      description:
-        "NFT created for EthGlobal NFTHack 2022 and limited to 100 personalised tokens",
-      image: new File(
-        [
-          `${baseSVG}${name}</text>
+    try {
+      await client
+        .store({
+          name: `${name}: Filecoin @ NFTHack 2022`,
+          description:
+            "NFT created for EthGlobal NFTHack 2022 and limited to 100 personalised tokens",
+          image: new File(
+            [
+              `${baseSVG}${name}</text>
       </svg>`,
-        ],
-        `FilecoinNFTHack.svg`,
-        {
-          type: "image/svg+xml",
-        }
-      ),
-      traits: {
-        awesomeness: "100", //probs should use 0-1 for solidity
-      },
-    });
-
-    //wrap this in a try function - if it doesn't save - no mint
-    let imgViewArray = metadata.data.image.pathname.split("/");
-    const imgView = `https://${imgViewArray[2]}.ipfs.dweb.link/${imgViewArray[3]}`;
-    setLinks({ ...links, image: imgView });
-    const status = await client.status(metadata.ipnft);
-    console.log("status", status);
-    askContractToMintNft(metadata.url);
+            ],
+            `FilecoinNFTHack.svg`,
+            {
+              type: "image/svg+xml",
+            }
+          ),
+          traits: {
+            awesomeness: "100", //probs should use 0-1 for solidity
+          },
+        })
+        .then((metadata) => {
+          console.log("metadata saved", metadata);
+          let imgViewArray = metadata.data.image.pathname.split("/");
+          setImageView(
+            `https://${imgViewArray[2]}.ipfs.dweb.link/${imgViewArray[3]}`
+          );
+          console.log("linksObjMeta", linksObj);
+          // const status = await client.status(metadata.ipnft);
+          // console.log("status", status);
+          askContractToMintNft(metadata.url);
+        });
+    } catch (error) {
+      console.log("Could not save NFT to NFT.Storage - Aborted minting");
+    }
   };
 
   const askContractToMintNft = async (IPFSurl) => {
     //should check the wallet chain is correct here
-    console.log("name value", name);
+    console.log("name value", name, linksObj);
     try {
       const { ethereum } = window;
 
@@ -180,27 +153,24 @@ const App = () => {
           signer
         );
 
-        console.log("Going to pop wallet now to pay gas...");
+        console.log("Opening wallet");
         let nftTxn = await connectedContract.mintMyNFT(IPFSurl);
 
-        console.log("Mining...please wait.");
+        connectedContract.on(
+          "NewFilecoinNFTMinted",
+          (from, tokenId, tokenURI) => {
+            console.log("event listener", from, tokenId.toNumber(), tokenURI);
+            setLinksObj({
+              ...linksObj,
+              opensea: `https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId.toNumber()}`,
+              rarible: `https://rinkeby.rarible.com/token/${CONTRACT_ADDRESS}:${tokenId.toNumber()}`,
+              etherscan: `https://rinkeby.etherscan.io/tx/${nftTxn.hash}`,
+            });
+          }
+        );
+
+        //SHOULD UPDATE IMAGELINK to returned value
         await nftTxn.wait();
-
-        setLinks({
-          ...links,
-          etherscan: `https://rinkeby.etherscan.io/tx/${nftTxn.hash}`,
-        });
-
-        console.log(
-          `Mined, see transaction: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`
-        );
-        //these look wrong...
-        console.log(
-          `See nft on opensea: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`
-        );
-        console.log(
-          `See it on rarible: https://rinkeby.rarible.com/token/${CONTRACT_ADDRESS}:{tokenID}`
-        );
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -248,7 +218,7 @@ const App = () => {
   const renderNotConnectedContainer = () => (
     <button
       onClick={connectWallet}
-      className="cta-button connect-wallet-button"
+      className="cta-button connect-to-wallet-button"
     >
       Connect to Wallet
     </button>
@@ -282,10 +252,11 @@ const App = () => {
   );
 
   const renderImagePreview = () => {
+    console.log("image", imageView);
     return (
       <div>
         <img
-          src={links.image}
+          src={imageView}
           alt="NFT image preview"
           height="200px"
           width="200px"
@@ -305,47 +276,21 @@ const App = () => {
     );
   };
 
-  const renderFooter = () => {
-    return (
-      <div className="footer-container">
-        <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
-        <a
-          className="footer-text"
-          href="https://twitter.com/developerally"
-          target="_blank"
-          rel="noreferrer"
-        >
-          DeveloperAlly
-        </a>
-      </div>
-    );
-  };
-
   return (
-    <div className="App">
-      <div className="container">
-        <div className="header-container">
-          <p className="header gradient-text">NFTHack NFT Collection</p>
-          <p className="sub-text">
-            Limited edition! 100 personalised NFTs made by Filecoin for
-            EthGlobal NFTHack 2022
-          </p>
-          <p className="sub-text">Remaining NFTS:</p>
-          {currentAccount === ""
-            ? renderNotConnectedContainer()
-            : renderMintUI()}
-          {links.etherscan &&
-            renderLink(links.etherscan, "See your Transaction on Etherscan")}
-          {links.openseaLink &&
-            renderLink(links.openseaLink, "See your NFT on OpenSea")}
-          {links.raribleLink &&
-            renderLink(links.raribleLink, "See your NFT on Rarible")}
-          {links.image && renderLink(links.image, "See IPFS image link")}
-          {links.image && renderImagePreview()}
-        </div>
-        {renderFooter()}
-      </div>
-    </div>
+    <Layout connected={currentAccount === ""} connectWallet={connectWallet}>
+      <>
+        <p className="sub-sub-text">Remaining NFTS:</p>
+        {currentAccount === "" ? renderNotConnectedContainer() : renderMintUI()}
+        {linksObj.etherscan &&
+          renderLink(linksObj.etherscan, "See your Transaction on Etherscan")}
+        {linksObj.opensea &&
+          renderLink(linksObj.opensea, "See your NFT on OpenSea")}
+        {linksObj.rarible &&
+          renderLink(linksObj.rarible, "See your NFT on Rarible")}
+        {imageView && renderLink(imageView, "See IPFS image link")}
+        {imageView && renderImagePreview()}
+      </>
+    </Layout>
   );
 };
 

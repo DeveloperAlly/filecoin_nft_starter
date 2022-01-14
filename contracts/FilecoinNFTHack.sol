@@ -30,6 +30,7 @@ contract FilecoinNFTHack is ERC721URIStorage {
     }
     */
     event NewFilecoinNFTMinted(address sender, uint256 tokenId, string tokenURI);
+    event RemainingMintableNFTChange(uint256 remainingMintableNFTs);
 
     //This sets our collection details. Anything minted by this contract will fall under this header
     constructor() ERC721 ("EthGlobal NFTHack2022", "Filecoin Starter NFTs") {
@@ -59,6 +60,7 @@ contract FilecoinNFTHack is ERC721URIStorage {
         nftCollection.push(newNFT);
 
         emit NewFilecoinNFTMinted(msg.sender, newItemId, ipfsURI);
+        emit RemainingMintableNFTChange(remainingMintableNFTs);
     }
 
     /**

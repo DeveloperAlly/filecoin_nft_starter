@@ -10,11 +10,11 @@
   background-color: #0d1116;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  /* justify-content: space-between; */
 }
 
 .header-container {
-  padding-top: 30px;
+  padding-top: 0px;
 }
 
 .header {
@@ -26,6 +26,13 @@
 .sub-text {
   font-size: 25px;
   color: white;
+}
+
+.sub-sub-text {
+  font-size: 20px;
+  color: white;
+  padding: 0;
+  margin: 0;
 }
 
 .gradient-text {
@@ -50,6 +57,12 @@
 
 .connect-wallet-button {
   background: -webkit-linear-gradient(left, #60c657, #35aee2);
+  background-size: 200% 200%;
+  animation: gradient-animation 4s ease infinite;
+}
+
+.connect-to-wallet-button {
+  background: -webkit-linear-gradient(left, #fff985, #ff84fd);
   background-size: 200% 200%;
   animation: gradient-animation 4s ease infinite;
 }
@@ -79,11 +92,23 @@
   font-weight: bold;
 }
 
-.footer-container {
+.footer-container-twitter {
   display: flex;
   justify-content: center;
   align-items: center;
   padding-bottom: 30px;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  flex-direction: column;
 }
 
 .twitter-logo {
@@ -132,10 +157,17 @@
   }
 }
 
+.header-menu-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+}
+
 .input {
   border-radius: 20px;
   background-size: 200% 200%;
-  margin-right: 15px;
   height: 45px;
   border: 0;
   width: auto;
