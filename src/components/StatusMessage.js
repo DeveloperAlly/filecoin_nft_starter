@@ -2,8 +2,9 @@ import React from "react";
 import { Message, Icon } from "semantic-ui-react";
 
 const StatusMessage = ({ status, ...props }) => {
+  console.log("loading status", status);
   return (
-    <>
+    <div style={{ height: "100px" }}>
       {status ? (
         <div>
           <Message
@@ -41,7 +42,7 @@ const StatusMessage = ({ status, ...props }) => {
           </Message>
         </div>
       ) : null}
-    </>
+    </div>
   );
 };
 

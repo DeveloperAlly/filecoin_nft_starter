@@ -2,9 +2,11 @@ import "./styles/App.css";
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Layout from "./components/Layout";
-import StatusMessage from "./components/StatusMessage";
+// import StatusMessage from "./components/StatusMessage";
 import filecoinNFTHack from "./utils/FilecoinNFTHack.json";
 import { baseSVG } from "./utils/BaseSVG";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
 
 import { NFTStorage, File } from "nft.storage";
 
@@ -31,6 +33,7 @@ const App = () => {
   const [name, setName] = useState("");
   const [linksObj, setLinksObj] = useState(INITIAL_LINK_STATE);
   const [imageView, setImageView] = useState("");
+  const [remainingNFTs, setRemainingNFTs] = useState("");
   const [nftCollectionData, setNftCollectionData] = useState("");
   const [transactionState, setTransactionState] = useState(
     INITIAL_TRANSACTION_STATE
@@ -45,6 +48,11 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    // setUpEventListener();
+    fetchNFTCollection();
+  }, [currentAccount]);
+
+  useEffect(() => {
     console.log("linksObj changed", linksObj);
   });
 
@@ -56,20 +64,17 @@ const App = () => {
       return;
     } else {
       console.log("We have the ethereum object", ethereum);
-      fetchNFTCollection();
     }
 
     const accounts = await ethereum.request({ method: "eth_accounts" });
 
     if (accounts.length !== 0) {
-      const account = accounts[0];
-      console.log("Found an authorized account:", account);
-      setCurrentAccount(account);
+      setCurrentAccount(accounts[0]);
     } else {
       console.log("No authorized account found");
     }
 
-    //make sure on right network
+    //TODO: make sure on right network or change programatically
     // let chainId = await ethereum.request({ method: 'eth_chainId' });
     // console.log("Connected to chain " + chainId);
 
@@ -98,10 +103,76 @@ const App = () => {
     }
   };
 
+  const setUpEventListener = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const connectedContract = new ethers.Contract(
+          CONTRACT_ADDRESS,
+          filecoinNFTHack.abi,
+          signer
+        );
+
+        connectedContract.on("RemainingMintableNFTChange", (remainingNFTs) => {
+          setRemainingNFTs(remainingNFTs);
+        });
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchNFTCollection = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const connectedContract = new ethers.Contract(
+          CONTRACT_ADDRESS,
+          filecoinNFTHack.abi,
+          signer
+        );
+        let remainingNFTs = await connectedContract.remainingMintableNFTs();
+        console.log("remaining", remainingNFTs.toNumber());
+        setRemainingNFTs(remainingNFTs.toNumber());
+        let collection = await connectedContract.getNFTCollection();
+
+        console.log(`Got Collection`, collection);
+        setNftCollectionData(collection);
+
+        //testing fetching data to display image
+        let link = collection[0][1].split("/");
+        console.log(link);
+        let fetchURL = `https:${link[2]}.ipfs.dweb.link/${link[3]}`;
+        fetch(fetchURL)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+          });
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   //Create the IPFS CID of the json data
   const createNFTData = async () => {
     //lets load up this token with some metadata and our image and save it to NFT.storage
     //need status indicators
+    setTransactionState({
+      ...INITIAL_TRANSACTION_STATE,
+      loading: "Saving NFT data to NFT.Storage...",
+    });
+    setImageView("");
     try {
       await client
         .store({
@@ -123,6 +194,11 @@ const App = () => {
           },
         })
         .then((metadata) => {
+          setTransactionState({
+            ...transactionState,
+            success: "Saved NFT data to NFT.Storage...",
+            loading: "",
+          });
           console.log("metadata saved", metadata);
           let imgViewArray = metadata.data.image.pathname.split("/");
           setImageView(
@@ -135,12 +211,21 @@ const App = () => {
         });
     } catch (error) {
       console.log("Could not save NFT to NFT.Storage - Aborted minting");
+      setTransactionState({
+        ...INITIAL_TRANSACTION_STATE,
+        error: "Could not save NFT to NFT.Storage - Aborted minting",
+      });
     }
   };
 
   const askContractToMintNft = async (IPFSurl) => {
     //should check the wallet chain is correct here
-    console.log("name value", name, linksObj);
+    console.log("name value", name);
+    setTransactionState({
+      ...INITIAL_TRANSACTION_STATE,
+      loading: "Approving & minting NFT...",
+    });
+
     try {
       const { ethereum } = window;
 
@@ -171,47 +256,49 @@ const App = () => {
 
         //SHOULD UPDATE IMAGELINK to returned value
         await nftTxn.wait();
+        setTransactionState({
+          ...INITIAL_TRANSACTION_STATE,
+          success: "NFT Minted!",
+        });
       } else {
         console.log("Ethereum object doesn't exist!");
+        setTransactionState({
+          ...INITIAL_TRANSACTION_STATE,
+          error: `No Wallet connected`,
+        });
       }
     } catch (error) {
-      console.log(error);
+      setTransactionState({
+        ...INITIAL_TRANSACTION_STATE,
+        error: `Error Minting NFT. ${error.message}`,
+      });
     }
   };
 
-  const fetchNFTCollection = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const connectedContract = new ethers.Contract(
-          CONTRACT_ADDRESS,
-          filecoinNFTHack.abi,
-          signer
-        );
-
-        let collection = await connectedContract.getNFTCollection();
-
-        console.log(`Got Collection`, collection);
-        setNftCollectionData(collection);
-
-        //testing fetching data to display image
-        let link = collection[0][1].split("/");
-        console.log(link);
-        let fetchURL = `https:${link[2]}.ipfs.dweb.link/${link[3]}`;
-        fetch(fetchURL)
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data);
-          });
-      } else {
-        console.log("Ethereum object doesn't exist!");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const renderStatus = () => {
+    const { loading, error, success } = transactionState;
+    return (
+      <div
+        style={{
+          height: `${loading ? "100px" : "50px"}`,
+          width: "100%",
+          display: "flex",
+          color: "white",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
+        <Box sx={{ width: "30%" }}>
+          {loading ? loading : success ? success : error}
+        </Box>
+        {loading && (
+          <Box sx={{ width: "20%", marginTop: "30px" }}>
+            <LinearProgress />
+          </Box>
+        )}
+      </div>
+    );
   };
 
   // Render Methods
@@ -244,7 +331,7 @@ const App = () => {
             ? "cta-button connect-wallet-button"
             : "cta-button connect-wallet-button-disabled"
         }
-        disabled={!name}
+        disabled={!name || transactionState.loading}
       >
         Mint NFT
       </button>
@@ -279,16 +366,25 @@ const App = () => {
   return (
     <Layout connected={currentAccount === ""} connectWallet={connectWallet}>
       <>
-        <p className="sub-sub-text">Remaining NFTS:</p>
-        {currentAccount === "" ? renderNotConnectedContainer() : renderMintUI()}
+        <p className="sub-sub-text">{`Remaining NFTS: ${remainingNFTs}`}</p>
+        {transactionState !== INITIAL_TRANSACTION_STATE && renderStatus()}
+        {imageView &&
+          !linksObj.etherscan &&
+          renderLink(imageView, "See IPFS image link")}
+        {imageView && renderImagePreview()}
         {linksObj.etherscan &&
           renderLink(linksObj.etherscan, "See your Transaction on Etherscan")}
         {linksObj.opensea &&
           renderLink(linksObj.opensea, "See your NFT on OpenSea")}
         {linksObj.rarible &&
           renderLink(linksObj.rarible, "See your NFT on Rarible")}
-        {imageView && renderLink(imageView, "See IPFS image link")}
-        {imageView && renderImagePreview()}
+        {currentAccount === "" ? (
+          renderNotConnectedContainer()
+        ) : transactionState.loading ? (
+          <div />
+        ) : (
+          renderMintUI()
+        )}
       </>
     </Layout>
   );
