@@ -17,8 +17,7 @@ const Header = () => {
       </a>
       <p className="header gradient-text">NFTHack NFT Collection</p>
       <p className="sub-text">
-        Limited edition! 100 personalised NFTs made by Filecoin for EthGlobal
-        NFTHack 2022
+        100 personalised NFTs for Filecoin @ EthGlobal NFTHack 2022
       </p>
     </>
   );
