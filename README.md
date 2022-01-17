@@ -15,6 +15,16 @@ Be aware the way I am storing the svg in the front-end is not secure. It's easil
 
 I'll be doing some updates on this package in future to build on it and ensure more security. :)
 
+# Quick start
+1. Clone the project & move to project directory `>git clone ... && cd ..`
+2. Create a .env file in the root `>touch .env`
+3. Get an NFT.Storage API key https://nft.storage/ and add this to the .env
+4. Add your rinkeby blockchain server api and url to the .env file (ive used alchemy here, though moralis & infura are also awesome)
+5. Install packages `>npm install`
+6. Deploy the solidity contract to the rinkeby testnet using hardhat `>npx hardhat run scripts/deploy.js --network rinkeby`
+7. Add your contract address to the .env file
+8. Run your front end in dev mode `>npm start` OR deploy with Fleek https://fleek.co/
+
 # Read-me still a work in progress.... watch this git commit! XD
 
 Dev Things (contracts):
