@@ -34,7 +34,7 @@ Dev Things (contracts):
 
 Ways to save your NFT SVG
 
-1. You can save it in the contrct itself
+1. You can save it in the contract itself
 2. You can save it as an IPFS CID
 3. You can use web2... (we wouldn't do that though would we!)
 
@@ -44,7 +44,7 @@ Run contract: npx hardhat
 > Deploy contract to rinkeby:
 > npx hardhat run scripts/deploy.js --network rinkeby
 
-Running the front end localy (host on Fleek)
+Running the front end localy (or host on Fleek)
 npm install && npm start
 
 To make this project from scratch:
@@ -52,10 +52,10 @@ To make this project from scratch:
 Dependencies:
 Node installed.
 Metamask, https://metamask.io/download.html
-Moralis Quick server details (or infure/achemy),
+Alchemy server details (or infura/moralis),
 etherscan account (for verifying contract)
 
-Tasks - setup:
+Setup from scratch instead:
 
 > npx create-react-app my-app-name
 > cd my-app-name
@@ -114,4 +114,4 @@ Resources
 - Read the IPFS best practice guide for NFT's https://docs.ipfs.io/how-to/mint-nfts-with-ipfs/#a-short-introduction-to-nfts
 - See the NFT.School guide https://nftschool.dev/
 - Public Gateway status checker: https://ipfs.github.io/public-gateway-checker/
-- Faucets for rinkeby eth:
+- Faucets for rinkeby eth: https://faucets.chain.link/rinkeby
