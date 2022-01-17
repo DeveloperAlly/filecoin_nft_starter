@@ -10,7 +10,7 @@ The DApp UI is deployed on fleek.co. Fleek makes it easy to deploy websites and 
 You can see the project live here: https://shrill-wave-1303.on.fleek.co/ 
 
 
-#Notes
+# Notes
 Be aware the way I am storing the svg in the front-end is not secure. It's easily hackable. The main point of the repo is really to show how easy it is to use NFT.storage to save and retrieve files, as well as how easy it is to use Fleek as your decentralised front end server (instead of say netlify or vercel).
 
 I'll be doing some updates on this package in future to build on it and ensure more security. :)
