@@ -15,6 +15,8 @@ Be aware the way I am storing the svg in the front-end is not secure. It's easil
 
 I'll be doing some updates on this package in future to build on it and ensure more security. :)
 
+Thanks to Buildspace.so for the initial styling on this app
+
 # Quick start
 1. Clone the project & move to project directory `>git clone https://github.com/DeveloperAlly/filecoin_nft_starter.git && cd filecoin-nft-starter`
 2. Create a .env file in the root `>touch .env`
