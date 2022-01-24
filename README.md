@@ -16,7 +16,7 @@ Be aware the way I am storing the svg in the front-end is not secure. It's easil
 I'll be doing some updates on this package in future to build on it and ensure more security. :)
 
 # Quick start
-1. Clone the project & move to project directory `>git clone ... && cd ..`
+1. Clone the project & move to project directory `>git clone https://github.com/DeveloperAlly/filecoin_nft_starter.git && cd filecoin-nft-starter`
 2. Create a .env file in the root `>touch .env`
 3. Get an NFT.Storage API key https://nft.storage/ and add this to the .env
 4. Add your rinkeby blockchain server api and url to the .env file (ive used alchemy here, though moralis & infura are also awesome)
