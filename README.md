@@ -11,6 +11,8 @@ Please make sure you only use Rinkeby Testnet ETH for this! It is ONLY deployed 
 
 You can see the project live here: https://shrill-wave-1303.on.fleek.co/ 
 
+There is a video presentation walking through the main features of NFT.Storage here: https://www.youtube.com/watch?v=bIZNW_c6Hx4 
+
 ![image](https://user-images.githubusercontent.com/12529822/150732438-e7f3a3a3-7559-4d15-95ed-fa2788494244.png)
 
 
